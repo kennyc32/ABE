@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join ABE — Sign the Petition</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;500;700&family=Barlow:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+        
+        :root {
+            --pure-black: #000000;
+            --off-black: #0a0a0a;
+            --pure-white: #ffffff;
+            --off-white: #f8f8f8;
+            --gray-dark: #222222;
+            --gray-mid: #666666;
+            --gray-light: #cccccc;
+            --success: #00ff00;
+            --error: #ff0000;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        ::selection {
+            background: var(--pure-white);
+            color: var(--pure-black);
+            mix-blend-mode: difference;
+        }
+        
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--pure-black);
+            color: var(--pure-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Football Field Background Pattern */
+        .field-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            background-image: 
+                /* Yard lines */
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 9.5%,
+                    rgba(255,255,255,0.3) 9.5%,
+                    rgba(255,255,255,0.3) 10%
+                ),
+                /* Hash marks */
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 48px,
+                    rgba(255,255,255,0.2) 48px,
+                    rgba(255,255,255,0.2) 50px,
+                    transparent 50px,
+                    transparent 98px,
+                    rgba(255,255,255,0.2) 98px,
+                    rgba(255,255,255,0.2) 100px
+                );
+            background-size: 100% 100%, 100% 100px;
+        }
+        
+        /* Football Icons */
+        .football-decoration {
+            position: fixed;
+            font-size: 6rem;
+            opacity: 0.03;
+            z-index: 0;
+        }
+        
+        .football-decoration.top-left {
+            top: 10%;
+            left: 10%;
+            transform: rotate(15deg);
+        }
+        
+        .football-decoration.bottom-right {
+            bottom: 10%;
+            right: 10%;
+            transform: rotate(-15deg);
+        }
+        
+        /* Navigation */
+        nav {
+            padding: 2rem 4rem;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 100%);
+        }
+        
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--pure-white);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo::before {
+            content: '🏈';
+            font-size: 1.5rem;
+            animation: spin 4s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .back-link {
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--pure-white);
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--pure-white);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .back-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--pure-white);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            border-radius: 50%;
+        }
+        
+        .back-link:hover {
+            color: var(--pure-black);
+        }
+        
+        .back-link:hover::before {
+            width: 150%;
+            height: 150%;
+        }
+        
+        .back-link span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Main Form Container */
+        .signup-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .signup-wrapper {
+            width: 100%;
+            max-width: 600px;
+            animation: formSlide 0.8s ease-out;
+        }
+        
+        @keyframes formSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .form-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .form-title::before,
+        .form-title::after {
+            content: '🏈';
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.2;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .form-title::before {
+            left: -3rem;
+            animation-delay: 0s;
+        }
+        
+        .form-title::after {
+            right: -3rem;
+            animation-delay: 1s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .form-subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.8;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Form Styling */
+        .signup-form {
+            background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Field Lines Decoration */
+        .signup-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 80px,
+                rgba(255,255,255,0.03) 80px,
+                rgba(255,255,255,0.03) 82px
+            );
+            z-index: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        label {
+            display: block;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        label::before {
+            content: '▶';
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+        
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: var(--pure-white);
+            font-family: 'Barlow', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            border-color: var(--pure-white);
+            background: rgba(0,0,0,0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+        }
+        
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+        
+        .field-hint {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.25rem;
+            font-style: italic;
+            padding-left: 1rem;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 1.5rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: var(--pure-white);
+            color: var(--pure-black);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--pure-black);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        .submit-btn:hover {
+            color: var(--pure-white);
+            transform: scale(1.02);
+        }
+        
+        .submit-btn:hover::before {
+            width: 800px;
+            height: 800px;
+        }
+        
+        .submit-btn span {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
+            animation: successFade 0.5s ease-out;
+            position: relative;
+        }
+        
+        @keyframes successFade {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-text {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .success-subtext {
+            font-size: 1.1rem;
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+        
+        .success-hashtag {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            opacity: 0.3;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Movement Stats */
+        .stats-bar {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stats-bar::before,
+        .stats-bar::after {
+            content: '🏈';
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0.1;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .stats-bar::before {
+            left: 2rem;
+        }
+        
+        .stats-bar::after {
+            right: 2rem;
+        }
+        
+        .stats-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 1rem;
+        }
+        
+        .member-count {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.5rem 1rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .signup-form {
+                padding: 2rem 1.5rem;
+            }
+            
+            .form-title {
+                font-size: 2.5rem;
+            }
+            
+            .form-title::before,
+            .form-title::after {
+                display: none;
+            }
+            
+            .member-count {
+                font-size: 2rem;
+            }
+            
+            .football-decoration {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Football Decorations -->
+    <div class="football-decoration top-left">🏈</div>
+    <div class="football-decoration bottom-right">🏈</div>
+    
+    <!-- Field Pattern -->
+    <div class="field-pattern"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="abe-landing-final.html" class="logo">ABE</a>
+            <a href="abe-landing-final.html" class="back-link"><span>← Back</span></a>
+        </div>
+    </nav>
+    
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <div class="signup-wrapper">
+            <div class="form-header">
+                <h1 class="form-title">JOIN THE RESISTANCE</h1>
+                <p class="form-subtitle">Sign the petition. Kill the nonsense.</p>
+            </div>
+            
+            <form class="signup-form" id="abeSignupForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                    <p class="field-hint">We'll use this to send important movement updates</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="(555) 123-4567">
+                    <p class="field-hint">For urgent league reform notifications only</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reason">Why Are You Joining ABE?</label>
+                    <textarea id="reason" name="reason" required placeholder="Tell us about the final straw. What BS pushed you to join the movement? Share your story of terrible trades, league drama, or the nonsense that needs to end..."></textarea>
+                    <p class="field-hint">Your testimony helps build our case for change</p>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <span>Sign the Petition 🏈</span>
+                </button>
+            </form>
+            
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">🏈</div>
+                <div class="success-text">WELCOME TO THE MOVEMENT</div>
+                <div class="success-subtext">
+                    Your voice has been heard.<br>
+                    Together, we'll restore honor to our brotherhood.
+                </div>
+                <div class="success-hashtag">#ABE</div>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stats-title">Brothers in Arms</div>
+                <div class="member-count" id="memberCount">247</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Form submission handler
+        document.getElementById('abeSignupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const reason = document.getElementById('reason').value;
+            
+            // Simulate form submission (in real implementation, this would send to a server)
+            console.log('Form submitted:', { email, phone, reason });
+            
+            // Show success message
+            document.querySelector('.signup-form').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Increment member count with animation
+            const countElement = document.getElementById('memberCount');
+            let currentCount = parseInt(countElement.textContent);
+            const newCount = currentCount + 1;
+            
+            // Animate the count increase
+            let tempCount = currentCount;
+            const increment = setInterval(() => {
+                if (tempCount < newCount) {
+                    tempCount++;
+                    countElement.textContent = tempCount;
+                } else {
+                    clearInterval(increment);
+                }
+            }, 50);
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    value = `(${value}`;
+                } else if (value.length <= 6) {
+                    value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+                } else {
+                    value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+                }
+            }
+            e.target.value = value;
+        });
+        
+        // Animated member count on page load
+        window.addEventListener('load', function() {
+            const memberCount = document.getElementById('memberCount');
+            const targetCount = 247;
+            let currentCount = 200;
+            const duration = 2000;
+            const steps = 60;
+            const increment = (targetCount - currentCount) / steps;
+            let step = 0;
+            
+            const counter = setInterval(() => {
+                step++;
+                currentCount = Math.floor(200 + (increment * step));
+                
+                if (step >= steps) {
+                    currentCount = targetCount;
+                    clearInterval(counter);
+                }
+                
+                memberCount.textContent = currentCount;
+            }, duration / steps);
+        });
+    </script>
+</body>
+</html>
